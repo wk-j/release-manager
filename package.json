@@ -1,0 +1,16 @@
+{
+    "name": "release-manager",
+    "productName": "Release Manager",
+    "version": "0.1.0",
+    "main": "main.js",
+    "scripts": {
+      "package": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=public/images/large-round.icns --prune=true --out=builds"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {},
+    "devDependencies": {
+      "electron": "^1.6.11",
+      "electron-packager": "^8.7.2"
+    }
+  }

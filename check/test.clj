@@ -12,4 +12,29 @@
 
 (model :title)
 
+;; update
+(def assets (atom
+             [{:title "File A" :check true}
+              {:title "File B" :check false}
+              {:title "File C" :check false}]))
 
+(filter #(not= (% :title) "File A") @assets)
+
+(into [] (concat [{:a "a"}] [{:b "b"}]))
+
+(conj [{:a 100}] {:a 200})
+
+(defn update-x [file]
+  (filter #(not= (% :title) (file :title)) @assets)) 
+
+(swap! assets conj (update-x {:title "File A" :check true}) {:title "B"})
+
+(defn toggle [title check]
+  (swap! assets (filter #(not= title (% :title)) @assets)))
+
+(defn toggle [title check]
+    (swap! assets (conj (filter #(not= "File A" (% :title)) @assets) {:title title :check true})))
+
+(filter #(not= "File A" (% :title)) @assets)
+
+(toggle "File C" true)

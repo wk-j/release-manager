@@ -1,17 +1,22 @@
 (ns release-manager.core
     (:require
-      ;;[left-pad]
       [reagent.core :as r]))
 
 ;; Models
-(def assets (r/atom
-              [{:title "File A" :check true}
-               {:title "File B" :check false}
-               {:title "File C" :check false}]))
+(defonce assets (r/atom (sorted-map)))
+(defonce counter (r/atom 0))
 
-(def release (r/atom {:title    "" 
-                      :version  "" 
-                      :notes    ""}))
+(defn add-asset [title]
+                (let [id (swap! counter inc)]
+                  (swap! assets assoc id {:id id :title title :check false})))
+
+(defonce init (do
+                (add-asset "Rename Cloact to Reagent")
+                (add-asset "Add undo demo")
+                (add-asset "Make all rendering async")
+                (add-asset "Allow any arguments to component functions"))) 
+
+(def release (r/atom {:title "" :version  "" :notes ""}))
 
 ;; Controls
 (def electron  (js/require "electron"))
@@ -33,11 +38,6 @@
                              (filter #(%)) 
                              (map #(% :title)))})))
 
-(defn up-pred
-    [vm pred & kvs]
-    (let [i (some (fn [[i m]] (when (pred m) i))
-                  (map-indexed vector vm))]
-      (apply update-in vm [i] assoc kvs)))
 
 (defn update-title [title]
   (swap! release assoc :title title)) 
@@ -48,8 +48,11 @@
 (defn update-notes [notes]
   (swap! release assoc :notes notes))
 
-(defn toggle [file]
-  (swap! assets (up-pred assets #(= (:title %) (file :title) :check (not (file :check))))))
+(defn fill [title check]
+  (filter (fn [x] (= title (x :title))) assets))
+
+
+(defn toggle [id] (swap! assets update-in [id :check] not))
 
 ;; -------------------------
 ;; Views
@@ -58,9 +61,9 @@
   [:div.checkbox 
     [:label
       [:input {:type "checkbox" 
-               :on-change #(toggle file)
+               :on-change #(toggle (file :id))
                :checked (file :check)}]
-      (file :title)]])
+      (str (file :check) " " (file :title))]])
 
 (defn form[release, assets]
   [:form {:style {:padding "15px"}}
@@ -107,7 +110,7 @@
 
 (defn home-page []
   [:div 
-    (window @release @assets)])
+    (window @release (vals @assets))])
 
 ;; -------------------------
 ;; Initialize app

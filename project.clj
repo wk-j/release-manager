@@ -32,8 +32,6 @@
                          :output-to "public/js/app.js"
                          :output-dir "public/js/out"
                          :asset-path   "js/out"
-                         ;;:npm-deps {:left-pad "1.1.3"} ;; NEW
-                         ;;:install-deps true ;; NEW
                          :source-map true
                          :optimizations :none
                          :pretty-print  true}

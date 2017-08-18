@@ -4,16 +4,12 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
-  :dependencies [[org.clojure/clojure "1.8.0"]
+  :dependencies [[org.clojure/clojure "1.9.0-alpha14"]
                  [org.clojure/clojurescript "1.9.908"]
                  [reagent "0.7.0"]]
 
   :plugins [[lein-cljsbuild "1.1.5"]
-            [lein-npm "0.6.2"]
             [lein-figwheel "0.5.13"]]
-
-  :npm {:dependencies [[publish-release "1.3.3"]]
-        :devDepedencies [[electron "1.6.11"]]}
 
   :min-lein-version "2.5.0"
 
@@ -36,6 +32,8 @@
                          :output-to "public/js/app.js"
                          :output-dir "public/js/out"
                          :asset-path   "js/out"
+                         ;;:npm-deps {:left-pad "1.1.3"} ;; NEW
+                         ;;:install-deps true ;; NEW
                          :source-map true
                          :optimizations :none
                          :pretty-print  true}

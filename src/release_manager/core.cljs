@@ -1,11 +1,17 @@
 (ns release-manager.core
     (:require
+      ;;[left-pad]
       [reagent.core :as r]))
+
+;; (require '[cljs.build.api :as b])
 
 ;; -------------------------
 ;; Views
 
-(def fs (js/require "fs"))
+(def electron    (js/require "electron"))
+
+(defn cancel []
+  (electron.ipcRenderer.send "cancel"))
 
 (defn checkbox [file]
   [:div.checkbox 
@@ -37,11 +43,10 @@
 (defn footer []
   [:footer.toolbar.toolbar-footer
     [:div.toolbar-actions
-      [:button.btn.btn-default "Cancel"]
+      [:button.btn.btn-default {:on-click #(cancel)} "Cancel"]
       [:button.btn.btn-default.pull-right 
         [:span.icon.icon-github]
         ". Publish New Release"]]])
-        
 
 (defn window []
   [:div.window

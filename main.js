@@ -51,6 +51,10 @@ function publishToGithub(release, successCallback, errorCallback) {
     });
 }
 
+ipcMain.on("cancel", () => {
+    app.exit(0);
+});
+
 ipcMain.on("click", () => {
     console.log("do something");
 });

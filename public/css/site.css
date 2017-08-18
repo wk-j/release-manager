@@ -13,3 +13,8 @@ input {
   top: -1px;
   *overflow: hidden;
 }
+
+span.icon.icon-github {
+  color: black;
+  margin-right: 5px;
+}

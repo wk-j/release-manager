@@ -53,7 +53,7 @@
       [:input {:type "checkbox" 
                :on-change #(toggle (file :id))
                :checked (file :check)}]
-      (str (file :check) " " (file :title))]])
+      (file :title)]])
 
 (defn form[release, assets]
   [:form {:style {:padding "15px"}}
@@ -83,7 +83,7 @@
       [:button.btn.btn-default {:on-click #(cancel)} "Cancel"]
       [:button.btn.btn-default.pull-right  {:on-click #(publish-release release assets)}
         [:span.icon.icon-github]
-        ". Publish New Release"]]])
+        "Publish"]]])
 
 (defn window [release, assets]
   [:div.window
@@ -92,9 +92,9 @@
         [:button.btn.btn-default.pull-right
           [:span.icon.icon-github]]]]
     [:div.window-content
-      [:div.pane {:style {:overflow-y "visible" :border-left "none"}}
-        [:img {:src "images/github.png"}]]
-      [:div.pane
+      [:div.pane-sm {:style {:overflow-y "visible" :border-left "none"}}
+        [:img {:src "images/github.png" :width 150}]]
+      [:div.pane {:style {:overflow-y "visible"}}
         (form release assets)]]
     (footer release assets)])
 

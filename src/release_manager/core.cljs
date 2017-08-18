@@ -90,7 +90,7 @@
     [:header.toolbar.toolbar-header
       [:div.toolbar-actions
         [:button.btn.btn-default.pull-right
-          [:span.icon.icon-github]]]]
+          [:span.icon.icon-home]]]]
     [:div.window-content
       [:div.pane-sm {:style {:overflow-y "visible" :border-left "none"}}
         [:img {:src "images/github.png" :width 150}]]

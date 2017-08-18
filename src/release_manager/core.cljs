@@ -6,9 +6,9 @@
 (defonce assets (r/atom (sorted-map)))
 (defonce counter (r/atom 0))
 
-(defn add-asset [title]
-                (let [id (swap! counter inc)]
-                  (swap! assets assoc id {:id id :title title :check false})))
+(defn add-asset [title] 
+  (let [id (swap! counter inc)] 
+    (swap! assets assoc id {:id id :title title :check false})))
 
 (defonce init (do
                 (add-asset "Rename Cloact to Reagent")
@@ -18,11 +18,9 @@
 
 (def release (r/atom {:title "" :version  "" :notes ""}))
 
-;; Controls
 (def electron  (js/require "electron"))
 
-(defn cancel []
-  (electron.ipcRenderer.send "cancel"))
+(defn cancel [] (electron.ipcRenderer.send "cancel"))
 
 (defn get-files []
   (let [files (electron.ipcRenderer.send "getFiles")]
@@ -38,19 +36,11 @@
                              (filter #(%)) 
                              (map #(% :title)))})))
 
+(defn update-title [title] (swap! release assoc :title title)) 
 
-(defn update-title [title]
-  (swap! release assoc :title title)) 
+(defn update-version [version] (swap! release assoc :version version))
 
-(defn update-version [version] 
-  (swap! release assoc :version version))
-
-(defn update-notes [notes]
-  (swap! release assoc :notes notes))
-
-(defn fill [title check]
-  (filter (fn [x] (= title (x :title))) assets))
-
+(defn update-notes [notes] (swap! release assoc :notes notes))
 
 (defn toggle [id] (swap! assets update-in [id :check] not))
 
@@ -115,8 +105,6 @@
 ;; -------------------------
 ;; Initialize app
 
-(defn mount-root []
-  (r/render [home-page] (.getElementById js/document "app")))
+(defn mount-root [] (r/render [home-page] (.getElementById js/document "app")))
 
-(defn init! []
-  (mount-root))
+(defn init! [] (mount-root))

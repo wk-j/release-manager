@@ -3,15 +3,24 @@
       ;;[left-pad]
       [reagent.core :as r]))
 
-;; (require '[cljs.build.api :as b])
+;; Models
+(def release (r/atom {:title "Title" 
+                      :version "Version" 
+                      :notes "Release notes"
+                      :assets [{:title "File A" :check true}
+                               {:title "File B" :check false}
+                               {:title "File C" :check false}]}))
 
 ;; -------------------------
 ;; Views
 
-(def electron    (js/require "electron"))
+(def electron  (js/require "electron"))
 
 (defn cancel []
   (electron.ipcRenderer.send "cancel"))
+
+(defn get-files []
+  (electron.ipcRenderer.send "getFiles"))
 
 (defn checkbox [file]
   [:div.checkbox 
@@ -22,33 +31,34 @@
 (defn assets [files]
   (map checkbox files))
 
-(defn form[]
+(defn form[release]
   [:form {:style {:padding "15px"}}
     [:div.form-group
       [:label "Title"]
-      [:input {:type "text" :class "form-control" :placeholder "Title"}]]
+      [:input {:type "text" :class "form-control" :placeholder "Title" 
+               :value (release :title)}]]
     [:div.form-group
       [:label "Release note"]
-      [:textarea.form-control {:rows 3 :placeholder "Release note"}]]
+      [:textarea.form-control {:rows 3 :placeholder "Release note" 
+                               :value (release :notes)}]]
     [:div.form-group  
       [:label "Version"]
-      [:input {:type "text" :class "form-control" :placeholder "Version"}]]
+      [:input {:type "text" :class "form-control" :placeholder "Version" 
+               :value (release :version)}]]
     [:div.form-group
       [:label "Assets"]
       [:div  {:style {:padding-left "20px"}}
-        (assets [{:title "File1" :check true}
-                 {:title "File2" :check false}
-                 {:title "File3" :check false}])]]])
+        (assets (release :assets))]]])
 
 (defn footer []
   [:footer.toolbar.toolbar-footer
     [:div.toolbar-actions
       [:button.btn.btn-default {:on-click #(cancel)} "Cancel"]
-      [:button.btn.btn-default.pull-right 
+      [:button.btn.btn-default.pull-right  {:on-click #(get-files)}
         [:span.icon.icon-github]
         ". Publish New Release"]]])
 
-(defn window []
+(defn window [release]
   [:div.window
     [:header.toolbar.toolbar-header
       [:div.toolbar-actions
@@ -58,13 +68,12 @@
       [:div.pane {:style {:overflow-y "visible" :border-left "none"}}
         [:img {:src "images/github.png"}]]
       [:div.pane
-        (form)]]
+        (form release)]]
     (footer)])
 
 (defn home-page []
   [:div 
-    (window)
-    [:h2 "Welcome to Reagent"]])
+    (window @release)])
 
 ;; -------------------------
 ;; Initialize app

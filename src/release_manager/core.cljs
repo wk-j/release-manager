@@ -5,30 +5,41 @@
 ;; -------------------------
 ;; Views
 
-(defn checkbox [text]
-  [:div.checkbox
+(defn checkbox [file]
+  [:div.checkbox 
     [:label
-      [:input {:type "checkbox"}]
-      text]])
+      [:input {:type "checkbox" :checked (file :check)}]
+      (file :title)]])
 
-
-(defn assets []
-  [:div.form-group
-   (checkbox "This is chekcbox")
-   (checkbox "This is checkbox")])
+(defn assets [files]
+  (map checkbox files))
 
 (defn form[]
-  [:form {:style {:padding "10px"}}
+  [:form {:style {:padding "15px"}}
     [:div.form-group
       [:label "Title"]
       [:input {:type "text" :class "form-control" :placeholder "Title"}]]
     [:div.form-group
       [:label "Release note"]
-      [:textarea.form-control {:rows 5 :placeholder "Release note"}]]
+      [:textarea.form-control {:rows 3 :placeholder "Release note"}]]
     [:div.form-group  
       [:label "Version"]
       [:input {:type "text" :class "form-control" :placeholder "Version"}]]
-    (assets)])
+    [:div.form-group
+      [:label "Assets"]
+      [:div  {:style {:padding-left "20px"}}
+        (assets [{:title "File1" :check true}
+                 {:title "File2" :check false}
+                 {:title "File3" :check false}])]]])
+
+(defn footer []
+  [:footer.toolbar.toolbar-footer
+    [:div.toolbar-actions
+      [:button.btn.btn-default "Cancel"]
+      [:button.btn.btn-default.pull-right 
+        [:span.icon.icon-github]
+        ". Publish New Release"]]])
+        
 
 (defn window []
   [:div.window
@@ -40,8 +51,7 @@
       [:div.pane {:style {:overflow-y "visible" :border-left "none"}}]
       [:div.pane
         (form)]]
-    [:footer.toolbar.toolbar-footer
-      [:ht.title]]])
+    (footer)])
 
 (defn home-page []
   [:div 

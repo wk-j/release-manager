@@ -48,7 +48,8 @@
         [:button.btn.btn-default.pull-right
           [:span.icon.icon-github]]]]
     [:div.window-content
-      [:div.pane {:style {:overflow-y "visible" :border-left "none"}}]
+      [:div.pane {:style {:overflow-y "visible" :border-left "none"}}
+        [:img {:src "images/github.png"}]]
       [:div.pane
         (form)]]
     (footer)])

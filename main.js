@@ -1,6 +1,8 @@
 const { app, BrowserWindow } = require("electron");
-const path = require("path")
-const url = require("url")
+const path = require("path");
+const url = require("url");
+const publishRelease = require("publish-release");
+const { ipcMain } = require("electron");
 
 let win;
 
@@ -27,4 +29,28 @@ app.on("window-all-closed", () => {
 
 app.on("activate", () => {
     if (win == null) createWindow();
+});
+
+// RENDERER
+function publishToGithub(release, successCallback, errorCallback) {
+    publishRelease({
+        token: "",
+        owner: "bcircle",
+        tag: release.version,
+        name: release.title + " " +  release.version,
+        nodes: release.releateNote,
+        draft: false,
+        prerlease : false,
+        reuseRelease: true,
+        reuseDraftOnly: true,
+        assetns : release.assets,
+        target_commitish: "master"
+    }, (err, release) => {
+        if(err) errorCallback(err);
+        else successCallback(release);
+    });
+}
+
+ipcMain.on("click", () => {
+    console.log("do something");
 });

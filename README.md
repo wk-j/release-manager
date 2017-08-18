@@ -1,5 +1,11 @@
 ## Release Manager
 
+### Installl node dependencies
+
+```
+lein npm install 
+```
+
 ### Development mode
 
 To start the Figwheel compiler, navigate to the project folder and run the following command in the terminal:

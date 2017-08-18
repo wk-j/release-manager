@@ -5,6 +5,8 @@
 ;; -------------------------
 ;; Views
 
+(def fs (js/require "fs"))
+
 (defn checkbox [file]
   [:div.checkbox 
     [:label

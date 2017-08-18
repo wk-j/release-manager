@@ -9,7 +9,11 @@
                  [reagent "0.7.0"]]
 
   :plugins [[lein-cljsbuild "1.1.5"]
+            [lein-npm "0.6.2"]
             [lein-figwheel "0.5.13"]]
+
+  :npm {:dependencies [[publish-release "1.3.3"]]
+        :devDepedencies [[electron "1.6.11"]]}
 
   :min-lein-version "2.5.0"
 

@@ -14,14 +14,30 @@
                       :notes    ""}))
 
 ;; Controls
-
 (def electron  (js/require "electron"))
 
 (defn cancel []
   (electron.ipcRenderer.send "cancel"))
 
 (defn get-files []
-  (electron.ipcRenderer.send "getFiles"))
+  (let [files (electron.ipcRenderer.send "getFiles")]
+    (swap! assets (map #({:title % :check false}) files))))
+
+(defn publish-release [release assets]
+  (electron.ipcRenderer.send 
+      "publishRelease" 
+      (clj->js {:title (release :title)
+                :version (release :version)
+                :notes (release :notes)
+                :assets (->> assets 
+                             (filter #(%)) 
+                             (map #(% :title)))})))
+
+(defn up-pred
+    [vm pred & kvs]
+    (let [i (some (fn [[i m]] (when (pred m) i))
+                  (map-indexed vector vm))]
+      (apply update-in vm [i] assoc kvs)))
 
 (defn update-title [title]
   (swap! release assoc :title title)) 
@@ -32,7 +48,8 @@
 (defn update-notes [notes]
   (swap! release assoc :notes notes))
 
-(defn toggle [] "")
+(defn toggle [file]
+  (swap! assets (up-pred assets #(= (:title %) (file :title) :check (not (file :check))))))
 
 ;; -------------------------
 ;; Views
@@ -41,7 +58,7 @@
   [:div.checkbox 
     [:label
       [:input {:type "checkbox" 
-               :on-change #(toggle)
+               :on-change #(toggle file)
                :checked (file :check)}]
       (file :title)]])
 
@@ -67,11 +84,11 @@
       [:div  {:style {:padding-left "20px"}}
         (map checkbox assets)]]])
 
-(defn footer []
+(defn footer [release assets]
   [:footer.toolbar.toolbar-footer
     [:div.toolbar-actions
       [:button.btn.btn-default {:on-click #(cancel)} "Cancel"]
-      [:button.btn.btn-default.pull-right  {:on-click #(get-files)}
+      [:button.btn.btn-default.pull-right  {:on-click #(publish-release release assets)}
         [:span.icon.icon-github]
         ". Publish New Release"]]])
 
@@ -86,7 +103,7 @@
         [:img {:src "images/github.png"}]]
       [:div.pane
         (form release assets)]]
-    (footer)])
+    (footer release assets)])
 
 (defn home-page []
   [:div 

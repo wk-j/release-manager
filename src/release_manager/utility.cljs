@@ -1,6 +1,9 @@
 (ns release-manager.utility
     (:require    
-        [reagent.core :as r]))
+      [cljs.core.async]
+      [reagent.core :as r])
+    (:require-macros [cljs-asynchronize.macros :as dm :refer [asynchronize]]
+      [cljs.core.async.macros :as am :refer [go]]))
 
 (def electron (js/require "electron"))
 (def gh (js/require "publish-release"))
@@ -34,11 +37,9 @@
     {:absolute true
      :ignore ["node_modules"]}))
 
-
-(defn get-files []
-  (glob "**/*.zip;**/*.msi" 
-         options
-         (fn [err files]
-           (do
-             (js/console.log err)
-             (js/console.log files)))))
+(defn get-files [pattern callback]
+  (asynchronize
+    (def res (glob pattern options ...))
+    (do
+      (doseq [x res]
+        (callback x)))))

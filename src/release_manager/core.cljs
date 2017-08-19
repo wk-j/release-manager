@@ -3,27 +3,21 @@
       [release-manager.utility :as u]
       [reagent.core :as r]))
 
-(defonce assets (r/atom (sorted-map)))
+(def assets (r/atom (sorted-map)))
 (defonce counter (r/atom 0))
 
 (defn add-asset [title] 
   (let [id (swap! counter inc)] 
-    (swap! assets assoc id {:id id :title title :check false})))
+    (do
+      (swap! assets assoc id {:id id :title title :check false}))))
 
-(defonce init (do
-                (add-asset "Rename Cloact to Reagent")
-                (add-asset "Add undo demo")
-                (add-asset "Make all rendering async")
-                (add-asset "Allow any arguments to component functions"))) 
+(def init-files 
+  (do 
+    (u/get-files "**/*.msi" add-asset)
+    (u/get-files "**/*.zip" add-asset)
+    (u/get-files "**/*.amp" add-asset)))
 
-(def init-files (do (u/get-files)))
-
-;;(defonce ipcRenderer (.-ipcRenderer u/electron))
-;;(defn- handle-receive-files [event files]
-;;  (js/console.log files))
-;;(.on ipcRender "get-files-reply" handle-receive-files)
-
-(defonce release (r/atom {:title "Project" :version  "v0.0.1" :notes "- New release "}))
+(defonce release (r/atom {:title "Release" :version  "v0.0.1" :notes "- New release "}))
 (def status (r/atom ""))
 (def running (r/atom false))
 
@@ -97,7 +91,9 @@
   [:footer.toolbar.toolbar-footer
     [:div.toolbar-actions
       [:button.btn.btn-default 
-        {:on-click #(u/cancel)} "Cancel"]
+        {:on-click #(u/cancel)} 
+        ["span.icon.icon-cancel"]
+        "Close"]
       (if @running
         [:button.btn.btn-default.pull-right "Processing"]
         [:button.btn.btn-default.pull-right 

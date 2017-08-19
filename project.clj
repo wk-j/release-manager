@@ -5,6 +5,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
   :dependencies [[org.clojure/clojure "1.9.0-alpha14"]
+                 [org.clojure/core.async "0.3.443"]
                  [org.clojure/clojurescript "1.9.908"]
                  [reagent "0.7.0"]]
 

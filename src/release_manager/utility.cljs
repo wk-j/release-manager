@@ -4,6 +4,7 @@
 
 (def electron (js/require "electron"))
 (def gh (js/require "publish-release"))
+(def glob (js/require "glob"))
 
 (defn publish-to-github-x [r callback]
   (gh
@@ -28,5 +29,16 @@
 (defn cancel [] 
   (electron.ipcRenderer.send "cancel"))
 
+(def options 
+  (clj->js
+    {:absolute true
+     :ignore ["node_modules"]}))
+
+
 (defn get-files []
-  (electron.ipcRenderer.send "getFiles"))
+  (glob "**/*.zip;**/*.msi" 
+         options
+         (fn [err files]
+           (do
+             (js/console.log err)
+             (js/console.log files)))))

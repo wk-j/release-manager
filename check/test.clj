@@ -39,5 +39,7 @@
 
 (toggle "File C" true)
 
-
 (if "" true false)
+
+
+lein figwheel

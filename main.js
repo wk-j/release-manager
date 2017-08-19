@@ -33,31 +33,13 @@ app.on("activate", () => {
     if (win == null) createWindow();
 });
 
-// RENDERER
-function publishToGithub(release, successCallback, errorCallback) {
-    publishRelease({
-        token: "",
-        owner: "bcircle",
-        tag: release.version,
-        name: release.title + " " + release.version,
-        nodes: release.releateNote,
-        draft: false,
-        prerlease: false,
-        reuseRelease: true,
-        reuseDraftOnly: true,
-        assetns: release.assets,
-        target_commitish: "master"
-    }, (err, release) => {
-        if (err) errorCallback(err);
-        else successCallback(release);
-    });
-}
-
 ipcMain.on("cancel", () => {
     app.exit(0);
 });
 
-ipcMain.on("getFiles", async () => {
+ipcMain.on("get-files", async (event, callback) => {
+    console.log ("get file ...");
+
     let options = {
         absolute: true,
         ignore : ["node_modules"]
@@ -78,5 +60,5 @@ ipcMain.on("getFiles", async () => {
 
     var files = [msi, zip, amp].reduce((a, i) => a.concat(i), []);
     console.log(files);
-    return files;
+    event.sender.send("get-files-reply", files);
 });

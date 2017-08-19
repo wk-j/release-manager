@@ -16,8 +16,15 @@
                 (add-asset "Make all rendering async")
                 (add-asset "Allow any arguments to component functions"))) 
 
-(defonce release (r/atom {:title "Project" :version  "v0.0.1" :notes "- Fixed: "}))
-(def status (r/atom "___________________"))
+(def init-files (do (u/get-files)))
+
+;;(defonce ipcRenderer (.-ipcRenderer u/electron))
+;;(defn- handle-receive-files [event files]
+;;  (js/console.log files))
+;;(.on ipcRender "get-files-reply" handle-receive-files)
+
+(defonce release (r/atom {:title "Project" :version  "v0.0.1" :notes "- New release "}))
+(def status (r/atom ""))
 (def running (r/atom false))
 
 (defn update-title [title] 

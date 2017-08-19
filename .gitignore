@@ -16,3 +16,6 @@ pom.xml.asc
 /.env
 node_modules
 /assets
+
+.idea
+*.iml

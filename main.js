@@ -57,10 +57,6 @@ ipcMain.on("cancel", () => {
     app.exit(0);
 });
 
-ipcMain.on("publishRelease", (event, release) => {
-    console.log(release);
-});
-
 ipcMain.on("getFiles", async () => {
     let options = {
         absolute: true,

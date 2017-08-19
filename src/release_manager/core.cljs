@@ -1,8 +1,8 @@
 (ns release-manager.core
     (:require
+      [release-manager.utility :as u]
       [reagent.core :as r]))
 
-;; Models
 (defonce assets (r/atom (sorted-map)))
 (defonce counter (r/atom 0))
 
@@ -16,39 +16,48 @@
                 (add-asset "Make all rendering async")
                 (add-asset "Allow any arguments to component functions"))) 
 
-(def release (r/atom {:title "" :version  "" :notes ""}))
+(defonce release (r/atom {:title "Project" :version  "v0.0.1" :notes "- Fixed: "}))
+(def status (r/atom "___________________"))
+(def running (r/atom false))
 
-(def electron  (js/require "electron"))
+(defn update-title [title] 
+  (swap! release assoc :title title)) 
 
-(defn cancel [] (electron.ipcRenderer.send "cancel"))
+(defn update-version [version] 
+  (swap! release assoc :version version))
 
-(defn get-files []
-  (let [files (electron.ipcRenderer.send "getFiles")]
-    (swap! assets (map #({:title % :check false}) files))))
+(defn update-notes [notes] 
+  (swap! release assoc :notes notes))
 
-(defn publish-release [release assets]
-  (electron.ipcRenderer.send 
-      "publishRelease" 
-      (clj->js {:title (release :title)
-                :version (release :version)
-                :notes (release :notes)
-                :assets (->> assets 
-                             (filter #(%)) 
-                             (map #(% :title)))})))
+(defn toggle [id] 
+  (swap! assets update-in [id :check] not))
 
-(defn update-title [title] (swap! release assoc :title title)) 
+(defn gen-message [release assets]
+  (conj release 
+        {:assets (->> assets
+                      (filter #(% :check))
+                      (map #(% :title)))}))
 
-(defn update-version [version] (swap! release assoc :version version))
+(defn publish-callback [err release]
+  (do 
+    (swap! running (fn [] false))
+    (if err (swap! status (fn [] err)) 
+            (swap! status (fn [] "")))
+    (js/console.log err)
+    (js/console.log release)))
 
-(defn update-notes [notes] (swap! release assoc :notes notes))
-
-(defn toggle [id] (swap! assets update-in [id :check] not))
+(defn start-publish [release assets]
+  (do 
+    (swap! running (fn [] true))
+    (u/publish-to-github 
+      (gen-message release assets)
+      publish-callback)))
 
 ;; -------------------------
 ;; Views
 
 (defn checkbox [file]
-  [:div.checkbox 
+  [:div.checkbox {:key (file :id)}
     [:label
       [:input {:type "checkbox" 
                :on-change #(toggle (file :id))
@@ -80,10 +89,15 @@
 (defn footer [release assets]
   [:footer.toolbar.toolbar-footer
     [:div.toolbar-actions
-      [:button.btn.btn-default {:on-click #(cancel)} "Cancel"]
-      [:button.btn.btn-default.pull-right  {:on-click #(publish-release release assets)}
-        [:span.icon.icon-github]
-        "Publish"]]])
+      [:button.btn.btn-default 
+        {:on-click #(u/cancel)} "Cancel"]
+      (if @running
+        [:button.btn.btn-default.pull-right "Processing"]
+        [:button.btn.btn-default.pull-right 
+          {:on-click #(start-publish release assets)}
+          [:span.icon.icon-github]
+          "Publish"])
+      [:span.pull-right @status]]])
 
 (defn window [release, assets]
   [:div.window
@@ -105,6 +119,8 @@
 ;; -------------------------
 ;; Initialize app
 
-(defn mount-root [] (r/render [home-page] (.getElementById js/document "app")))
+(defn mount-root [] 
+  (r/render [home-page] (.getElementById js/document "app")))
 
-(defn init! [] (mount-root))
+(defn init! [] 
+  (mount-root))

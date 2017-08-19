@@ -38,3 +38,6 @@
 (filter #(not= "File A" (% :title)) @assets)
 
 (toggle "File C" true)
+
+
+(if "" true false)

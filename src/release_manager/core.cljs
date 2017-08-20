@@ -26,13 +26,6 @@
     (do
       (swap! assets assoc id {:id id :title title :check false}))))
 
-(def init-files 
-  (do 
-    (u/get-files "**/*.mdd" add-asset)
-    (u/get-files "**/*.msi" add-asset)
-    (u/get-files "**/*.zip" add-asset)
-    (u/get-files "**/*.amp" add-asset)))
-
 (defn update-title [title] 
   (swap! release assoc :title title)) 
 
@@ -58,13 +51,20 @@
                       (filter #(% :check))
                       (map #(% :title)))}))
 
-(defn publish-callback [err release]
+(defn publish-callback [err rl]
   (do 
     (swap! running (fn [] false))
     (if err (swap! status (fn [] (str err))) 
             (swap! status (fn [] "")))
     (js/console.log err)
-    (js/console.log release)))
+    (js/console.log rl)
+    (u/save-settings
+      {:repo    (@release :repo)
+       :owner   (@release :owner)
+       :version (@release :version)
+       :notes   (@release :notes)
+       :title   (@release :title)})))
+       
 
 (defn start-publish [release assets]
   (do 
@@ -73,6 +73,23 @@
       (gen-message release assets)
       publish-callback)))
 
+;; -------------------------
+;; Init
+(def init-files 
+  (do 
+    (u/get-files "**/*.mdd" add-asset)
+    (u/get-files "**/*.msi" add-asset)
+    (u/get-files "**/*.zip" add-asset)
+    (u/get-files "**/*.amp" add-asset)))
+
+(def load-setting
+  (do
+    (def s (u/load-settings))
+    (update-owner     (s "owner"))
+    (update-repo      (s "repo"))
+    (update-title     (s "title"))
+    (update-notes     (s "notes"))
+    (update-version   (s "version"))))
 ;; -------------------------
 ;; Views
 

@@ -3,8 +3,23 @@
       [release-manager.utility :as u]
       [reagent.core :as r]))
 
-(def assets (r/atom (sorted-map)))
+;; -------------------------
+;; Model
+
 (defonce counter (r/atom 0))
+
+(def status (r/atom ""))
+(def running (r/atom false))
+(def assets (r/atom (sorted-map)))
+
+(defonce release (r/atom {:title "Release" 
+                          :version  "v0.0.1" 
+                          :owner "bcircle"
+                          :repo ""
+                          :notes "- New release "}))
+
+;; -------------------------
+;; Update
 
 (defn add-asset [title] 
   (let [id (swap! counter inc)] 
@@ -13,13 +28,10 @@
 
 (def init-files 
   (do 
+    (u/get-files "**/*.mdd" add-asset)
     (u/get-files "**/*.msi" add-asset)
     (u/get-files "**/*.zip" add-asset)
     (u/get-files "**/*.amp" add-asset)))
-
-(defonce release (r/atom {:title "Release" :version  "v0.0.1" :notes "- New release "}))
-(def status (r/atom ""))
-(def running (r/atom false))
 
 (defn update-title [title] 
   (swap! release assoc :title title)) 
@@ -30,8 +42,15 @@
 (defn update-notes [notes] 
   (swap! release assoc :notes notes))
 
+(defn update-owner [owner]
+  (swap! release assoc :owner owner))
+
+(defn update-repo [repo]
+  (swap! release assoc :repo repo))
+
 (defn toggle [id] 
   (swap! assets update-in [id :check] not))
+
 
 (defn gen-message [release assets]
   (conj release 
@@ -42,7 +61,7 @@
 (defn publish-callback [err release]
   (do 
     (swap! running (fn [] false))
-    (if err (swap! status (fn [] err)) 
+    (if err (swap! status (fn [] (str err))) 
             (swap! status (fn [] "")))
     (js/console.log err)
     (js/console.log release)))
@@ -78,13 +97,23 @@
                                :on-change #(update-notes (-> % .-target .-value))
                                :value (release :notes)}]]
     [:div.form-group  
-      [:label "Version"]
+      [:label "Tag"]
       [:input {:type "text" :class "form-control" :placeholder "Version" 
                :on-change #(update-version (-> % .-target .-value))
                :value (release :version)}]]
+    [:div.form-group  
+      [:label "Owner"]
+      [:input {:type "text" :class "form-control" :placeholder "Owner" 
+               :on-change #(update-owner (-> % .-target .-value))
+               :value (release :owner)}]]
+    [:div.form-group  
+      [:label "Repository"]
+      [:input {:type "text" :class "form-control" :placeholder "Repository" 
+               :on-change #(update-repo(-> % .-target .-value))
+               :value (release :repo)}]]
     [:div.form-group
       [:label "Assets"]
-      [:div  {:style {:padding-left "20px"}}
+      [:div.assets  {:style {:padding-left "20px"}}
         (map checkbox assets)]]])
 
 (defn footer [release assets]

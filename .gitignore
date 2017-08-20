@@ -1,3 +1,4 @@
+.DS_Store
 /target
 /classes
 /checkouts
@@ -20,3 +21,4 @@ node_modules
 .idea
 *.iml
 files
+builds

@@ -1,5 +1,9 @@
 ## Release Manager
 
+### Requirement
+
+- Please add `GITHUB_TOKEN` into environment variables
+
 ### Development mode
 
 To start the Figwheel compiler, navigate to the project folder and run the following command in the terminal:

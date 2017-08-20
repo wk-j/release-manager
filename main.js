@@ -10,7 +10,7 @@ let win;
 function createWindow() {
     win = new BrowserWindow({
         icon: path.join(__dirname, "/images/photo.ico"),
-        width: 800, height: 572, titleBarStyle: "hidden"
+        width: 800, height: 650, titleBarStyle: "hidden"
     });
 
     win.loadURL(url.format({

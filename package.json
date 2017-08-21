@@ -2,13 +2,13 @@
   "name": "release-manager",
   "productName": "ghr",
   "description": "GitHub Release Manager",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "main.js",
   "scripts": {
     "mac-package": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=images/icon.icns --prune=true --out=builds",
     "mac-dmg": "electron-installer-dmg ./builds/ghr-darwin-x64/ghr.app ghr --overwrite --icon=images/icon.icns --out=builds",
     "linux-package": "electron-packager . ghr --platform linux --arch x64 --out builds/ --overwrite",
-    "linux-deb": "electron-installer-debian --src builds/ghr-linux-x64/ --dest builds --arch amd64",
+    "linux-deb": "electron-installer-debian --src builds/ghr-linux-x64/ --dest builds --arch amd64 --bin ghr",
     "windows-package": "electron-packager . ghr --platform win32 --arch x64 --out builds/ --overwrite",
     "windows-exe": "node windows.js",
     "create-package": "npm run mac-package; npm run mac-dmg; npm run linux-package; npm run linux-deb"

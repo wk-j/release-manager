@@ -24,3 +24,4 @@ files
 builds
 release
 *.exe
+.gh*

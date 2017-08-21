@@ -1,12 +1,17 @@
 {
   "name": "release-manager",
   "productName": "RMG",
+  "description": "GitHub Release Manager",
   "version": "0.1.0",
   "main": "main.js",
   "scripts": {
-    "package": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=images/icon.icns --prune=true --out=builds",
-    "dmg": "electron-installer-dmg ./builds/RMG-darwin-x64/RMG.app RMG --overwrite --icon=images/icon.icns --out=release",
-    "create-package" : "npm run package; npm run dmg"
+    "mac-package": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=images/icon.icns --prune=true --out=builds",
+    "mac-dmg": "electron-installer-dmg ./builds/RMG-darwin-x64/RMG.app RMG --overwrite --icon=images/icon.icns --out=release",
+    "linux-package": "electron-packager . RMG --platform linux --arch x64 --out builds/ --overwrite",
+    "linux-deb": "electron-installer-debian --src builds/RMG-linux-x64/ --dest release --arch amd64",
+    "windows-package": "electron-packager . RMG --platform win32 --arch x64 --out builds/ --overwrite",
+    "windows-exe": "node windows.js",
+    "create-package": "npm run mac-package; npm run mac-dmg"
   },
   "author": "",
   "license": "ISC",
@@ -19,7 +24,9 @@
   },
   "devDependencies": {
     "electron": "^1.6.11",
+    "electron-installer-debian": "^0.5.2",
     "electron-installer-dmg": "^0.2.1",
-    "electron-packager": "^8.7.2"
+    "electron-packager": "^8.7.2",
+    "electron-winstaller": "^2.6.3"
   }
 }

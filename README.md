@@ -10,7 +10,9 @@
 
 1. Install `RMG.dmg`
 2. Open Terminal
-3. Type `/Applications/RMG.app/Contents/MacOS/RMG`
+3. Type `/Applications/ghr.app/Contents/MacOS/ghr`
+4. Enter release information.
+5. Click `Publish`
 
 ### Development mode
 

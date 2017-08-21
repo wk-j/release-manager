@@ -1,17 +1,17 @@
 {
   "name": "release-manager",
-  "productName": "RMG",
+  "productName": "ghr",
   "description": "GitHub Release Manager",
-  "version": "0.1.0",
+  "version": "0.0.2",
   "main": "main.js",
   "scripts": {
     "mac-package": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=images/icon.icns --prune=true --out=builds",
-    "mac-dmg": "electron-installer-dmg ./builds/RMG-darwin-x64/RMG.app RMG --overwrite --icon=images/icon.icns --out=release",
-    "linux-package": "electron-packager . RMG --platform linux --arch x64 --out builds/ --overwrite",
-    "linux-deb": "electron-installer-debian --src builds/RMG-linux-x64/ --dest release --arch amd64",
-    "windows-package": "electron-packager . RMG --platform win32 --arch x64 --out builds/ --overwrite",
+    "mac-dmg": "electron-installer-dmg ./builds/ghr-darwin-x64/ghr.app ghr --overwrite --icon=images/icon.icns --out=builds",
+    "linux-package": "electron-packager . ghr --platform linux --arch x64 --out builds/ --overwrite",
+    "linux-deb": "electron-installer-debian --src builds/ghr-linux-x64/ --dest builds --arch amd64",
+    "windows-package": "electron-packager . ghr --platform win32 --arch x64 --out builds/ --overwrite",
     "windows-exe": "node windows.js",
-    "create-package": "npm run mac-package; npm run mac-dmg"
+    "create-package": "npm run mac-package; npm run mac-dmg; npm run linux-package; npm run linux-deb"
   },
   "author": "",
   "license": "ISC",

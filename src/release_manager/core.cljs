@@ -77,6 +77,7 @@
 (def init-files 
   (do 
     (u/get-files "**/*.dmg" add-asset)
+    (u/get-files "**/*.deb" add-asset)
     (u/get-files "**/*.msi" add-asset)
     (u/get-files "**/*.zip" add-asset)
     (u/get-files "**/*.amp" add-asset)))

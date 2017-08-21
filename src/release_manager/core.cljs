@@ -7,7 +7,6 @@
 ;; Model
 
 (defonce counter (r/atom 0))
-
 (def status (r/atom ""))
 (def running (r/atom false))
 (def assets (r/atom (sorted-map)))
@@ -77,7 +76,7 @@
 ;; Init
 (def init-files 
   (do 
-    (u/get-files "**/*.mdd" add-asset)
+    (u/get-files "**/*.dmg" add-asset)
     (u/get-files "**/*.msi" add-asset)
     (u/get-files "**/*.zip" add-asset)
     (u/get-files "**/*.amp" add-asset)))
@@ -148,12 +147,16 @@
           "Publish"])
       [:span.pull-right @status]]])
 
+(def shelljs (js/require "shelljs"))
+
 (defn window [release, assets]
   [:div.window
     [:header.toolbar.toolbar-header
       [:div.toolbar-actions
         [:button.btn.btn-default.pull-right
-          [:span.icon.icon-home]]]]
+          [:span.icon.icon-home]]
+        [:button.btn.btn-default.pull-right
+          (str "Release Manager " (shelljs.pwd))]]]
     [:div.window-content
       [:div.pane-sm {:style {:overflow-y "visible" :border-left "none"}}
         [:img {:src "images/github.png" :width 150}]]

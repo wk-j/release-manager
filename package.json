@@ -4,7 +4,8 @@
   "version": "0.1.0",
   "main": "main.js",
   "scripts": {
-    "package": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=public/images/large-round.icns --prune=true --out=builds"
+    "package": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=images/icon.icns --prune=true --out=builds",
+    "dmg": "electron-installer-dmg ./builds/gh-release-darwin-x64/gh-release.app RMG --overwrite --icon=images/icon.icns --out=release"
   },
   "author": "",
   "license": "ISC",
@@ -12,10 +13,12 @@
     "@cljs-oss/module-deps": "^1.1.1",
     "glob": "^7.1.2",
     "left-pad": "^1.1.3",
-    "publish-release": "^1.3.3"
+    "publish-release": "^1.3.3",
+    "shelljs": "^0.7.8"
   },
   "devDependencies": {
     "electron": "^1.6.11",
+    "electron-installer-dmg": "^0.2.1",
     "electron-packager": "^8.7.2"
   }
 }

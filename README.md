@@ -1,8 +1,16 @@
 ## Release Manager
 
+![](images/RMG.png)
+
 ### Requirement
 
-- Please add `GITHUB_TOKEN` into environment variables
+- `GITHUB_TOKEN` in system environment.
+
+### Usage
+
+1. Install `RMG.dmg`
+2. Open Terminal
+3. Type `/Applications/RMG.app/Contents/MacOS/RMG`
 
 ### Development mode
 
